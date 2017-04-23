@@ -1,35 +1,65 @@
-import configparser as cp
+from __future__ import print_function
+from __future__ import absolute_import
+import ConfigParser as cp
 import os
-import shutil
-from annotationutil import perpare_person,perpare_noperson
-from feature_extractor import extract_features
-from trainer import train_classifier
-from retrainer import retrain_classifier
-from tester import detect_dataset
-config = cp.RawConfigParser()
-config.read('../data/config/config.cfg')
-person_path=config.get("train","person_path")
-background_path=config.get("train","background_path")
-pos_feat_ph = config.get("paths", "pos_feat_ph")
-neg_feat_ph = config.get("paths", "neg_feat_ph")
 
-#sample image patches
-if not os.path.exists(person_path):
-    perpare_person()
-if not os.path.exists(background_path):
-    perpare_noperson()
-orient=[3,4,6,9]
-for i in orient:
+
+
+
+def batch(det_name):
+    #sample image patches
+    #os.system('python annotationutil.py')
+    # #extract features
+    os.system('python feature_extractor.py')
+    # #train
+    os.system('python trainer.py')
+    # #retrain
+    os.system('python retrainer.py')
+    # #save detections
+    os.system('python tester.py -p {}'.format(det_name))
+
+
+
+# orient=[3,4,6,9]
+# for ort in orient:
+#     conf = cp.RawConfigParser()
+#     conf.read('../data/config/origin_config.cfg')
+#     #modify configuration file
+#     conf.set('hog','orientations',ort)
+#     conf.write(open('../data/config/config.cfg','w'))
+
+#     batch('../data/detections/detections_orient_{}.data'.format(ort))
+# print('orient job finished!')
+
+cell_sz=[[4,4],[6,6],[8,8],[10,10]]
+for sz in cell_sz:
+    conf = cp.RawConfigParser()
+    conf.read('../data/config/origin_config.cfg')
     #modify configuration file
-    config.set('hog','orientations',i)
-    config.write(open('../data/config/config.cfg'.format(i),'w'))
-    #extract features
-    shutil.rmtree(pos_feat_ph)
-    shutil.rmtree(neg_feat_ph)
-    extract_features()
-    #train
-    train_classifier()
-    #retrain
-    retrain_classifier()
-    #save detections
-    detect_dataset('../data/detections/detections_orient_{}.data'.format(i))
+    conf.set('hog','pixels_per_cell',str(sz))
+    conf.write(open('../data/config/config.cfg','w'))
+
+    batch('../data/detections/detections_cell_{}.data'.format(sz))
+print('cell job finished!')
+
+block_sz=[[4,4],[3,3],[2,2]]
+for sz in block_sz:
+    conf = cp.RawConfigParser()
+    conf.read('../data/config/origin_config.cfg')
+    #modify configuration file
+    conf.set('hog','cells_per_block',str(sz))
+    conf.write(open('../data/config/config.cfg','w'))
+
+    batch('../data/detections/detections_block_{}.data'.format(sz))
+print('cell block finished!')
+
+# norm_type=['L1','L1-sqrt','L2','L2-Hys']
+# for n in norm_type:
+#     conf = cp.RawConfigParser()
+#     conf.read('../data/config/origin_config.cfg')
+#     #modify configuration file
+#     conf.set('hog','normalize',n)
+#     conf.write(open('../data/config/config.cfg','w'))
+
+#     batch('../data/detections/detections_norm_{}.data'.format(n))
+# print('norm job finished!')

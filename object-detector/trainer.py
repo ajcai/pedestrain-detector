@@ -1,4 +1,7 @@
 # Import the required modules
+from __future__ import division
+from __future__ import print_function
+xrange=range
 from skimage.feature import local_binary_pattern
 from sklearn.svm import LinearSVC
 from sklearn.linear_model import LogisticRegression

@@ -8,6 +8,7 @@ import cv2
 import random
 import string
 import numpy as np
+import argparse as ap
 from matplotlib import pyplot as plt
 from skimage.transform import resize,pyramid_gaussian
 from skimage.io import imread
@@ -15,7 +16,7 @@ from skimage.feature import hog
 from sklearn.externals import joblib
 from config import *
 from annotationutil import get_all_person,normlize_locs
-from nms import IOU,nms
+from nms import nms
 
 
 def sliding_window(image, window_size, step_size):
@@ -104,41 +105,6 @@ def detect_dataset(detections_path=detections_path):
     print("detections saved to {}".format(detections_path))
     return dataset_dects
 
-def judge_true_false(dect,imgid,norm_locs):
-    annotations=norm_locs.get(imgid,[])
-    for loc in annotations:
-        iou=IOU(loc,dect[:4])
-        if iou>iou_threshold:
-            return 'T'
-    return 'F'
-def count_FTPN(detections,norm_locs,threshold=0):
-    evaluations={'TP':0,'FP':0,'TN':0,'FN':0}
-    for imgid,det in detections.items():
-        for dt in det:
-            if dt[4]>threshold:
-                flag=judge_true_false(dt[:4],imgid,norm_locs)+'P'
-            else:
-                flag=judge_true_false(dt[:4],imgid,norm_locs)+'N'
-            evaluations[flag]+=1
-    return evaluations
-def compute_MR_FPPW(dete_path,visualize=False):
-    mr_fppw=[]
-    obj_pos=get_all_person('../data/dataset/INRIAPerson/Test/annotations')
-    norm_locs=normlize_locs(obj_pos)
-    detections=joblib.load(dete_path)
-    for th in np.arange(-2,2,0.2):
-        evaluations=count_FTPN(detections,norm_locs,th)
-        mr=evaluations['FN']/(evaluations['TP']+evaluations['FN'])
-        fppw=evaluations['FP']/(evaluations['TP']+evaluations['TN']+evaluations['FP']+evaluations['FN'])
-        mr_fppw.append((mr,fppw))
-    if visualize:
-        mr=[x[0] for x in mr_fppw]
-        fppw=[x[1] for x in mr_fppw]
-        plt.figure(1)
-        plt.plot(mr,fppw)
-        plt.show()
-    return mr_fppw
-
 
 def box_persons(im,boxes,title='title'):
     for box in boxes:
@@ -154,12 +120,9 @@ def box_persons(im,boxes,title='title'):
 
 
 if __name__=="__main__":
-    
-    #detect_dataset()
-
-    #mr_fppw=compute_MR_FPPW(detections_path,True)
-    #print(mr_fppw)
-    
-    detections=detect_an_image('../data/dataset/INRIAPerson/Test/pos/person_115.png',True)
-    # print(len(detections))
+    parser = ap.ArgumentParser()
+    parser.add_argument('-p', "--det_path", help="Path to the detections directory", default=detections_path)
+    args = vars(parser.parse_args())
+    det_path = args["det_path"]
+    detect_dataset(det_path)
 

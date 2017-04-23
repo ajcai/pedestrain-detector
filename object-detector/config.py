@@ -2,7 +2,7 @@
 Set the config variable.
 '''
 
-import configparser as cp
+import ConfigParser as cp
 import json
 
 config = cp.RawConfigParser()
@@ -27,3 +27,4 @@ iou_threshold = config.getfloat("iou", "threshold")
 detections_path = config.get("test","detections_path")
 test_pos_path = config.get("test","test_pos_path")
 test_neg_path = config.get("test","test_neg_path")
+test_annotation_path = config.get("test","test_annotation_path")

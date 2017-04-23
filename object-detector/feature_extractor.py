@@ -7,18 +7,21 @@ from skimage.io import imread
 from sklearn.externals import joblib
 # To read file names
 import argparse as ap
+import shutil
 import glob
 import os
 from config import *
 
 def extract_features(pos_im_path=person_path,neg_im_path=background_path,des_type="HOG"):
+    #clear old features
+    if os.path.exists(pos_feat_ph):
+        shutil.rmtree(pos_feat_ph)
+    if os.path.exists(neg_feat_ph):
+        shutil.rmtree(neg_feat_ph)
     # If feature directories don't exist, create them
-    if not os.path.isdir(pos_feat_ph):
-        os.makedirs(pos_feat_ph)
-
+    os.makedirs(pos_feat_ph)
     # If feature directories don't exist, create them
-    if not os.path.isdir(neg_feat_ph):
-        os.makedirs(neg_feat_ph)
+    os.makedirs(neg_feat_ph)
 
     print("Calculating the descriptors for the positive samples and saving them")
     for im_path in glob.glob(os.path.join(pos_im_path, "*")):

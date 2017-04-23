@@ -107,8 +107,8 @@ def perpare_person():
             imgroi=cv2.resize(imgroi,(min_wdw_sz[1],min_wdw_sz[0]))
             flip_img=flip_left_right(imgroi)
             random_name=''.join(random.sample(string.ascii_letters+string.digits, 10))
-            cv2.imwrite('%s/%s_person_L.png'%(person_path,img_id),imgroi)
-            cv2.imwrite('%s/%s_person_R.png'%(person_path,img_id),flip_img)
+            cv2.imwrite('%s/%s_%d_person_L.png'%(person_path,img_id,i),imgroi)
+            cv2.imwrite('%s/%s_%d_person_R.png'%(person_path,img_id,i),flip_img)
     #print aspect_ratio
     #print np.mean(aspect_ratio)
 
