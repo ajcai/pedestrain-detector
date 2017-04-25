@@ -38,10 +38,10 @@ def collect_hard_example():
     # Load the classifier
     clf = joblib.load(model_path)
     print('Colleting hard examples ...')
-    counter=0
+    #counter=0
     for img_path in glob.glob(os.path.join(neg_path,'*')):
-        counter+=1
-        print('processing {}/{}'.format(counter,len(glob.glob(os.path.join(neg_path,'*')))) )
+        #counter+=1
+        #print('processing {}/{}'.format(counter,len(glob.glob(os.path.join(neg_path,'*')))) )
         img_name=os.path.split(img_path)[-1].split(".")[0]
         img = imread(img_path, as_grey=True)
         img = resize(img,(240,320))

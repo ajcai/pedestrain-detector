@@ -1,9 +1,10 @@
-for demo:
-python .\test-classifier.py -i ../data/dataset/INRIAPerson/Test/pos/crop001604.png --visualize
+This is a project of pedetrain detection with HOG and SVM.
+Main steps are: 1.sample image patches -> 2.extract features -> 3.train a SVM model 
+-> 4.collect hard examples -> 5.retrain the model -> 6.demo or test on Test dataset
+#for demo:
+cd object-detector
+python demo.py
 
-# Extract the features
-pos_path = "../data/dataset/INRIAPerson/Train/person"
-neg_path = "../data/dataset/INRIAPerson/Train/noperson"
-python extract-features.py -p ../data/dataset/INRIAPerson/Train/person -n ../data/dataset/INRIAPerson/Train/noperson
-
-python train-classifier.py -p ../data/features/pos -n ../data/features/neg
+#train a model
+cd object-detector
+python main.py

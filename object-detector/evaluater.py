@@ -38,7 +38,7 @@ def compute_MR_FPPW(dets_path,visualize=False):
         detections=joblib.load(det_path)
         for th in np.arange(-2,2,0.2):
             evaluations=count_FTPN(detections,norm_locs,th)
-            print(evaluations)
+            #print(evaluations)
             mr=evaluations['FN']/(evaluations['TP']+evaluations['FN'])
             fppw=evaluations['FP']/(evaluations['TP']+evaluations['TN']+evaluations['FP']+evaluations['FN'])
             mr_fppw.append((mr,fppw))
@@ -54,7 +54,7 @@ def compute_MR_FPPW(dets_path,visualize=False):
     return mr_fppw_grp
 
 if __name__ == '__main__':
-    mr_fppw=compute_MR_FPPW('../data/detections/detections_norm_*.data',True)
+    mr_fppw=compute_MR_FPPW('../data/detections/detections_orient_*.data',True)
     # print(mr_fppw)
 
 

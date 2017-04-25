@@ -77,11 +77,11 @@ def detect_an_image(img_path,visualize_det=False):
     if visualize_det:
         # Display the results before performing NMS
         clone = im.copy()
-        box_persons(im,predictions,"Raw predictions before NMS")
+        box_persons(im,predictions,"Before NMS") #Raw predictions before NMS
         # Perform Non Maxima Suppression
         predictions = nms(predictions, iou_threshold)
         # Display the results after performing NMS
-        box_persons(clone,predictions,"Final Detections after applying NMS")
+        box_persons(clone,predictions,"After NMS")
         if cv2.waitKey(0) & 0xFF==ord('q'):
              cv2.destroyAllWindows()
     return detections
